@@ -77,3 +77,29 @@ export const loginUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserDetailsByEmail = async (req, res, next) => {
+  try {
+    const { email } = req.query;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw NotFound("No user found!");
+    }
+
+    // if user is found the return the user
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.log("Error getting user details", error);
+    next(error);
+  }
+};
