@@ -123,7 +123,7 @@ export const updateUserById = async (req, res, next) => {
     const { id } = req.params;
     const updates = req.body;
 
-    const user = User.findById(id);
+    const user = await User.findById(id);
     if (!user) {
       throw NotFound("No user found.");
     }

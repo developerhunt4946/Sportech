@@ -19,7 +19,7 @@ router.post("/login", loginUser);
 router.get("/user/", getUserDetailsByEmail);
 
 //PUT api for updating user profile
-router.get("/user/:id", updateUserById);
+router.put("/user/:id", updateUserById);
 
 //DELETE api for deleting user profile
 router.delete("/user/:id", deleteUserById);
