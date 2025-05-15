@@ -7,7 +7,14 @@ import { BadRequest, Unauthorized, NotFound } from "../utils/error.js";
 //User Registration
 export const createUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, role = "User" } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      dateOfBirth,
+      role = "User",
+    } = req.body;
 
     // Check if email is already register
     const existingUser = await User.findOne({ email });
@@ -24,6 +31,7 @@ export const createUser = async (req, res, next) => {
       lastName,
       email,
       password: hashedPassword,
+      dateOfBirth,
       role,
     });
     await user.save();
@@ -96,10 +104,67 @@ export const getUserDetailsByEmail = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        city: user.city,
+        state: user.state,
+        country: user.country,
+        profilePic: user.profilePic,
+        dateOfBirth: user.dateOfBirth,
       },
     });
   } catch (error) {
     console.log("Error getting user details", error);
+    next(error);
+  }
+};
+
+export const updateUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const user = User.findById(id);
+    if (!user) {
+      throw NotFound("No user found.");
+    }
+
+    const updatableFields = ["phone", "city", "state", "country", "profilePic"];
+    const updatedFields = {};
+
+    for (const field of updatableFields) {
+      if (updates[field] !== undefined) {
+        user[field] = updates[field];
+        updatedFields[field] = updates[field];
+      }
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User Profile updated succesfully.",
+    });
+  } catch (error) {
+    console.log("Error updating user", error);
+    next(error);
+  }
+};
+
+export const deleteUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      throw NotFound("User not found!");
+    }
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully.",
+    });
+  } catch (error) {
+    console.log("Error Deleting User", error);
     next(error);
   }
 };

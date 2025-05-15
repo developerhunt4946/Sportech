@@ -25,6 +25,29 @@ const userSchema = new mongoose.Schema(
       enum: ["User", "admin"],
       default: "User",
     },
+    phone: {
+      type: Number,
+      unique: true,
+    },
+    city: {
+      type: String,
+      default: null,
+    },
+    state: {
+      type: String,
+      default: null,
+    },
+    country: {
+      type: String,
+      default: null,
+    },
+    profilePic: {
+      type: String,
+      default: null,
+    },
+    dateOfBirth: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
